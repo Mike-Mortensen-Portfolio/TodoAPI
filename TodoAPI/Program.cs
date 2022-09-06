@@ -1,16 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using TodoAPI.Context;
 
+// Add services to the container.
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Add services to the container.
-
 var app = builder.Build();
+
 app.UseHttpsRedirection();
 
-app.MapGet("/", () => "Hello, World!");
+app.MapGet("/", async () =>
+{
+    using var context = app.Services.GetRequiredService<TodoContext>();
+    await context.InsertSeed();
+
+    return "Hello, World!";
+});
 
 app.MapGet("/todoitems", async (TodoContext context) => await context.Todos.ToListAsync());
 
@@ -64,3 +70,5 @@ app.MapDelete("/todoitems/{id}", async (int id, TodoContext context) =>
 });
 
 app.Run();
+
+public partial class Program { }
