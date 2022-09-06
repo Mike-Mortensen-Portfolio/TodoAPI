@@ -7,6 +7,8 @@
         public DateTime CreatedTime { get; set; }
         public bool IsComplete { get; set; }
         public Priority Priority { get; set; }
+
+        public bool IsRemoved { get; set; }
     }
 
     public enum Priority

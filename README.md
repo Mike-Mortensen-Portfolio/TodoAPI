@@ -13,16 +13,25 @@ _Add an introduction by explaining what the idea behind the application is_
 See the [WiKi](Insert_WiKi_Link_Here) for more in depth information about the project.
 
 ## Api Handlers
-| Method | Handler           | Description                                          | Request Body | Response Body        |
-|--------|-------------------|------------------------------------------------------|--------------|----------------------|
-| GET    | `/`               | A browsertest. Returns "Hello World"                 | None         | `Hello, World!`      |
-| GET    | `/todoitems`      | Gets all To-do items that are not yet completed      | None         | Array of To-do items |
-| GET    | `/todoitems/all`  | Gets all To-do items. Both uncompleted and completed | None         | Array of To-do items |
-| GET    | `/todoitems/{id}` | Gets the To-do item with the given Id                | None         | To-do item           |
-| POST   | `/todoitems`      | Adds a new To-do item                                | To-do item   | No content           |
-| PUT    | `/todoitems/{id}` | Updates the To-do item with the given Id             | To-do item   | No content           |
-| DELETE | `/todoItems/{id}` | Removes the To-do item with the given Id             | To-do item   | No content           |
+| Method | Handler           | Description                                          | Request Body | Response Body          |
+|--------|-------------------|------------------------------------------------------|--------------|------------------------|
+| GET    | `/`               | _A browsertest. Returns "Hello World"_                 | None         | `Hello, World!`        |
+| GET    | `/todoitems`      | _Gets all To-do items that are not yet completed_      | None         | `Array of To-do items` |
+| GET    | `/todoitems/all`  | _Gets all To-do items. Both uncompleted and completed_ | None         | `Array of To-do items` |
+| GET    | `/todoitems/{id}` | _Gets the To-do item with the given Id_                | None         | `To-do item`           |
+| POST   | `/todoitems`      | _Adds a new To-do item_                                | To-do item   | `No content`           |
+| PUT    | `/todoitems/{id}` | _Updates the To-do item with the given Id_             | To-do item   | `No content`           |
+| DELETE | `/todoItems/{id}` | _Removes the To-do item with the given Id_             | To-do item   | `No content`           |
 
+## Web Client Specifications
+- [X] ~~Index page with information about the project~~ Index page should act as the To-do item list view
+- [X] A page for displaying To-do items
+- [X] A details page and an edit page for To-do items
+- [X] A way to delete To-do items
+- [X] It should be possible to create a new To-do item from the index page
+- [X] Completed To-do items should not be displayed on the index page
+- [X] A ToDoService provider should be implemented
+- [X] Application constants should be collected in a class
 ## Entity Relation Diagram
 <details><summary>Click to show image(s)</summary>
 ![image](**Insert-Image**)

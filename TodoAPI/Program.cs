@@ -5,6 +5,7 @@ using TodoAPI.Context;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -13,20 +14,22 @@ app.UseHttpsRedirection();
 app.MapGet("/", async () =>
 {
     /*Seeding Start*/
-    //var scope = app.Services.CreateScope();
-    //using var context = scope.ServiceProvider.GetRequiredService<TodoContext>();
-    //await context.InsertSeed();
+    var scope = app.Services.CreateScope();
+    using var context = scope.ServiceProvider.GetRequiredService<TodoContext>();
+    await context.InsertSeed();
     /*Seeding End*/
 
     //  End point data
     return "Hello, World!";
 });
 
-app.MapGet("/todoitems", async (TodoContext context) => await context.Todos.ToListAsync());
+app.MapGet("/todoitems", async (TodoContext context) => await context.Todos
+                                                                .Where(i => !i.IsComplete && !i.IsRemoved)
+                                                                .ToListAsync());
 
 app.MapGet("/todoitems/all", async (TodoContext context) =>
     await context.Todos
-    .Where(i => !i.IsComplete)
+    .Where(i => !i.IsRemoved)
     .ToListAsync());
 
 app.MapGet("/todoitems/{id}", async (int id, TodoContext context) =>
@@ -74,6 +77,21 @@ app.MapDelete("/todoitems/{id}", async (int id, TodoContext context) =>
 
     return Results.Ok(todo);
 });
+
+app.MapDelete("/todoitems/soft/{id}", async (int id, TodoContext context) =>
+{
+    var todo = await context.Todos.FindAsync(id);
+
+    if (todo == null) return Results.NotFound();
+
+    todo.IsRemoved = true;
+
+    await context.SaveChangesAsync();
+
+    return Results.Ok(todo);
+});
+
+app.UseCors();
 
 app.Run();
 
