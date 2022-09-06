@@ -12,9 +12,13 @@ app.UseHttpsRedirection();
 
 app.MapGet("/", async () =>
 {
-    using var context = app.Services.GetRequiredService<TodoContext>();
-    await context.InsertSeed();
+    /*Seeding Start*/
+    //var scope = app.Services.CreateScope();
+    //using var context = scope.ServiceProvider.GetRequiredService<TodoContext>();
+    //await context.InsertSeed();
+    /*Seeding End*/
 
+    //  End point data
     return "Hello, World!";
 });
 
@@ -33,9 +37,11 @@ app.MapGet("/todoitems/{id}", async (int id, TodoContext context) =>
 
 app.MapPost("/todoitems", async (Todo todo, TodoContext context) =>
 {
+    if (todo.Id < 1 || todo.CreatedTime > DateTime.Now) { return Results.BadRequest($"One or more properties are invalid; {todo}"); }
+
     await context.AddAsync(todo);
 
-    await context.SaveChangesAsync();
+    if (await context.SaveChangesAsync() <= 0) { return Results.BadRequest(); }
 
     return Results.Created($"/todoitems/{todo.Id}", todo);
 });
