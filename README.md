@@ -7,7 +7,8 @@ _Add an introduction by explaining what the idea behind the application is_
 | .NET 6 Minimal Api | ... | ......... | In Memory |
 
 ## Dependencies
-- [ExampleDependency(_v1.0.0_)](LinkToDependency._Leave_blank_if_one_does_not_exist)
+- [Microsoft.EntityFrameworkCore.InMemory(_v6.0.8_)](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.InMemory/6.0.8)
+- [Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore(_v6.0.8_)](https://www.nuget.org/packages/Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore/6.0.8)
 
 See the [WiKi](Insert_WiKi_Link_Here) for more in depth information about the project.
 
@@ -32,8 +33,7 @@ See the [WiKi](Insert_WiKi_Link_Here) for more in depth information about the pr
 ![image](**Insert-Image**)
 </details>
 
-
-# SBO Standards
+# Standards
 - **Versioning**
   - Version Template: _[_Major_].[_Minor_].[_Patch_]-[StateMod]_.
   - `Major:`
@@ -65,7 +65,6 @@ See the [WiKi](Insert_WiKi_Link_Here) for more in depth information about the pr
   - `Scopes` must have explicit enclosure.
 
 ## Change Log
-_`Classes`, `structs`, `interfaces` and `enums` etc. are to be linked to the project WiKi Page, and versions are in descending order_
  - **[v0.0.0](LinkToGitLabTag)**
    - **Added**
      - _List the features added with this version_
