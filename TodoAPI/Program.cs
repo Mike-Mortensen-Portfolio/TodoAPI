@@ -6,10 +6,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddCors();
+builder.Services.AddAuthentication();
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+
+//app.UseAuthorization();
 
 app.MapGet("/", async () =>
 {
@@ -21,11 +24,12 @@ app.MapGet("/", async () =>
 
     //  End point data
     return "Hello, World!";
-});
+})/*.RequireAuthorization()*/;
 
 app.MapGet("/todoitems", async (TodoContext context) => await context.Todos
                                                                 .Where(i => !i.IsComplete && !i.IsRemoved)
-                                                                .ToListAsync());
+                                                                .ToListAsync()
+          )/*.RequireAuthorization()*/;
 
 app.MapGet("/todoitems/all", async (TodoContext context) =>
     await context.Todos
@@ -36,7 +40,8 @@ app.MapGet("/todoitems/{id}", async (int id, TodoContext context) =>
     await context.Todos.FindAsync(id)
         is Todo todo
             ? Results.Ok(todo)
-            : Results.NotFound());
+            : Results.NotFound()
+    )/*.RequireAuthorization()*/;
 
 app.MapPost("/todoitems", async (Todo todo, TodoContext context) =>
 {
@@ -47,7 +52,7 @@ app.MapPost("/todoitems", async (Todo todo, TodoContext context) =>
     if (await context.SaveChangesAsync() <= 0) { return Results.BadRequest(); }
 
     return Results.Created($"/todoitems/{todo.Id}", todo);
-});
+})/*.RequireAuthorization()*/;
 
 app.MapPut("/todoitems/{id}", async (int id, Todo input, TodoContext context) =>
 {
@@ -63,7 +68,7 @@ app.MapPut("/todoitems/{id}", async (int id, Todo input, TodoContext context) =>
     await context.SaveChangesAsync();
 
     return Results.NoContent();
-});
+})/*.RequireAuthorization()*/;
 
 app.MapDelete("/todoitems/{id}", async (int id, TodoContext context) =>
 {
@@ -76,7 +81,7 @@ app.MapDelete("/todoitems/{id}", async (int id, TodoContext context) =>
     await context.SaveChangesAsync();
 
     return Results.Ok(todo);
-});
+})/*.RequireAuthorization()*/;
 
 app.MapDelete("/todoitems/soft/{id}", async (int id, TodoContext context) =>
 {
@@ -89,7 +94,7 @@ app.MapDelete("/todoitems/soft/{id}", async (int id, TodoContext context) =>
     await context.SaveChangesAsync();
 
     return Results.Ok(todo);
-});
+})/*.RequireAuthorization()*/;
 
 app.UseCors();
 

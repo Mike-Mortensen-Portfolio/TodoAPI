@@ -29,11 +29,18 @@ namespace TodoClient.Pages
         {
             DisplayAll = includeCompleted.Value;
 
-            if (_service.GetItemsAsync() != null)
+            if (User.Identity.IsAuthenticated)
             {
-                Todo = (await _service.GetItemsAsync(includeCompleted ?? false))
-                    .ToList();
+                if (_service.GetItemsAsync() != null)
+                {
+                    Todo = (await _service.GetItemsAsync(includeCompleted ?? false))
+                        .ToList();
+
+                    return;
+                }
             }
+
+            Todo = new List<Todo>();
         }
     }
 }
