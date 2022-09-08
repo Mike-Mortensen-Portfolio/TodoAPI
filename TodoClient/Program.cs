@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAsyncTodoService, TodoService>();
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
@@ -13,7 +14,11 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
     options.ClientId = builder.Configuration["Auth0:ClientId"];
     options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
     options.Scope = "open id profile email";
-});
+})
+    .WithAccessToken(options =>
+    {
+        options.Audience = builder.Configuration["Auth0:Audience"];
+    });
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

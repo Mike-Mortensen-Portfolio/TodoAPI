@@ -13,7 +13,7 @@ namespace TodoClient.Pages.Account
         public async Task OnPost()
         {
             var authProperties = new LogoutAuthenticationPropertiesBuilder()
-                .WithRedirectUri(Url.Action("Index", "Home"))
+                .WithRedirectUri("https://localhost:7090/")
                 .Build();
 
             await HttpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authProperties);
