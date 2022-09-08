@@ -46,9 +46,13 @@ namespace TodoClient.Pages
 
             Todo.Id = currentTop + 1;
 
-            await _service.CreateItemAsync(Todo);
+            if (await _service.CreateItemAsync(Todo))
+            {
+                return Redirect($"/Details?id={Todo.Id}");
+            }
 
-            return Redirect($"/Details?id={Todo.Id}");
+            ModelState.AddModelError(String.Empty, "Access Denied");
+            return Page();
         }
     }
 }

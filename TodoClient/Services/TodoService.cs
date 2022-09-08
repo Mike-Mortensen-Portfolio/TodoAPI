@@ -34,7 +34,7 @@ namespace TodoClient.Services
 
             var result = await client.PostAsJsonAsync(TodoConstants.API_TODO_CREATE, item);
 
-            return result.StatusCode == System.Net.HttpStatusCode.OK;
+            return result.StatusCode == System.Net.HttpStatusCode.Created;
         }
 
         public async Task<IEnumerable<Todo>> GetItemsAsync(bool includeCompleted = false)
