@@ -32,6 +32,42 @@ See the [WiKi](Insert_WiKi_Link_Here) for more in depth information about the pr
 - [X] Completed To-do items should not be displayed on the index page
 - [X] A ToDoService provider should be implemented
 - [X] Application constants should be collected in a class
+
+## Setup
+### API
+Make sure that the API has the following `User Secrets`.
+
+```json
+{
+  "Auth0": {
+    "Domain": "[DOMAIN]",
+    "Audience": "API_IDENFITIER"
+  }
+}
+```
+The Json parameters can be obtained by creating an account on [Auth0](https://auth0.com/).
+Once there you'll have to create an API application by going to 
+**Dashboard** > **Applications** > **APIs** > **Create API**.
+
+### Client
+The following `User Secrets` must be present on the client,
+otherwise you won't be able to authenticate and/or authorize.
+
+```json
+{
+  "Auth0": {
+    "Domain": "[DOMAIN]",
+    "ClientId": "[CLIENT_ID]",
+    "ClientSecret": "CLIENT_SECRET",
+    "Audience": "API_IDENFITIER"
+  }
+}
+```
+You should already have a **Default App** on [Auth0](https://auth0.com/)
+from which you can obtain the Json parameters. However, in case you do not
+already have one, you can create on by going to
+**Dashboard** > **Applications** > **Applications** > **Create Application**.
+
 ## Entity Relation Diagram
 <details><summary>Click to show image(s)</summary>
 ![image](**Insert-Image**)
