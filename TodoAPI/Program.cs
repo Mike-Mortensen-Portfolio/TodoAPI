@@ -1,4 +1,9 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using TodoAPI.Auth0;
 using TodoAPI.Context;
 
 // Add services to the container.
@@ -6,13 +11,32 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddCors();
-builder.Services.AddAuthentication();
+
+var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.Authority = domain;
+    options.Audience = builder.Configuration["Auth0:Audience"];
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        NameClaimType = ClaimTypes.NameIdentifier
+    };
+});
+builder.Services.AddAuthorization(options =>
+{
+    //options.AddPolicy("read:todos", policy => policy.Requirements.Add(new HasScopeRequirement("read:todos", domain)));
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-
-//app.UseAuthorization();
 
 app.MapGet("/", async () =>
 {
@@ -24,12 +48,12 @@ app.MapGet("/", async () =>
 
     //  End point data
     return "Hello, World!";
-})/*.RequireAuthorization()*/;
+});
 
 app.MapGet("/todoitems", async (TodoContext context) => await context.Todos
                                                                 .Where(i => !i.IsComplete && !i.IsRemoved)
                                                                 .ToListAsync()
-          )/*.RequireAuthorization()*/;
+          ).RequireAuthorization();
 
 app.MapGet("/todoitems/all", async (TodoContext context) =>
     await context.Todos
@@ -41,7 +65,7 @@ app.MapGet("/todoitems/{id}", async (int id, TodoContext context) =>
         is Todo todo
             ? Results.Ok(todo)
             : Results.NotFound()
-    )/*.RequireAuthorization()*/;
+    ).RequireAuthorization();
 
 app.MapPost("/todoitems", async (Todo todo, TodoContext context) =>
 {
@@ -52,7 +76,7 @@ app.MapPost("/todoitems", async (Todo todo, TodoContext context) =>
     if (await context.SaveChangesAsync() <= 0) { return Results.BadRequest(); }
 
     return Results.Created($"/todoitems/{todo.Id}", todo);
-})/*.RequireAuthorization()*/;
+}).RequireAuthorization();
 
 app.MapPut("/todoitems/{id}", async (int id, Todo input, TodoContext context) =>
 {
@@ -68,7 +92,7 @@ app.MapPut("/todoitems/{id}", async (int id, Todo input, TodoContext context) =>
     await context.SaveChangesAsync();
 
     return Results.NoContent();
-})/*.RequireAuthorization()*/;
+}).RequireAuthorization();
 
 app.MapDelete("/todoitems/{id}", async (int id, TodoContext context) =>
 {
@@ -81,7 +105,7 @@ app.MapDelete("/todoitems/{id}", async (int id, TodoContext context) =>
     await context.SaveChangesAsync();
 
     return Results.Ok(todo);
-})/*.RequireAuthorization()*/;
+}).RequireAuthorization();
 
 app.MapDelete("/todoitems/soft/{id}", async (int id, TodoContext context) =>
 {
@@ -94,7 +118,11 @@ app.MapDelete("/todoitems/soft/{id}", async (int id, TodoContext context) =>
     await context.SaveChangesAsync();
 
     return Results.Ok(todo);
-})/*.RequireAuthorization()*/;
+}).RequireAuthorization();
+
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseCors();
 

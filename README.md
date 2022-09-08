@@ -4,7 +4,7 @@ _Add an introduction by explaining what the idea behind the application is_
 # Project Details
 | Platform | GUI | Timeframe | Database Solution |
 |----------|-----|-----------|-------------------|
-| .NET 6 Minimal Api | ... | ......... | In Memory |
+| .NET 6 | ... | ......... | In Memory |
 
 ## Dependencies
 - [Microsoft.EntityFrameworkCore.InMemory(_v6.0.8_)](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.InMemory/6.0.8)
